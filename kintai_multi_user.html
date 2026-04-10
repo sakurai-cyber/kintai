@@ -105,7 +105,10 @@
 <div class="app">
 
 <div id="s-login" class="screen active">
-  <div style="text-align:center;padding:2rem 0 1rem">
+  <div style="display:flex;justify-content:flex-end;padding-top:0.5rem">
+    <button onclick="location.reload()" style="background:none;border:none;font-size:22px;cursor:pointer;padding:4px 8px;border-radius:8px;" title="リロード">⟳</button>
+  </div>
+  <div style="text-align:center;padding:1rem 0 1rem">
     <div style="font-size:22px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px">出退勤管理</div>
     <div style="font-size:13px;color:var(--color-text-secondary)">ログインしてください</div>
   </div>
@@ -163,6 +166,7 @@
       <div style="font-weight:500;font-size:15px">管理者</div>
       <div style="font-size:12px;color:var(--color-text-secondary)">管理者モード</div>
     </div>
+    <button onclick="location.reload()" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;border-radius:8px;margin-right:4px;" title="リロード">⟳</button>
     <button class="logout-btn" onclick="doAdminLogout()">ログアウト</button>
   </div>
   <div class="card">
@@ -176,6 +180,11 @@
     <button class="btn" onclick="changeAdminPassword()" style="margin-top:10px">パスワードを変更</button>
     <div id="changeAdminMsg" style="font-size:12px;margin-top:6px;min-height:16px"></div>
   </div>
+  <div class="card" style="background:#FCEBEB;border:none">
+    <div style="font-size:13px;font-weight:500;margin-bottom:8px;color:#A32D2D">危険な操作</div>
+    <p style="font-size:12px;color:#A32D2D;line-height:1.6;margin-bottom:10px">全従業員・全打刻データを完全に削除します。この操作は取り消せません。</p>
+    <button class="btn btn-danger" onclick="resetAllData()" style="margin-top:0">全データをリセット</button>
+  </div>
 </div>
 
 <div id="s-main" class="screen">
@@ -185,6 +194,7 @@
       <div style="font-weight:500;font-size:15px" id="mainName"></div>
       <div style="font-size:12px;color:var(--color-text-secondary)">ログイン中</div>
     </div>
+    <button onclick="location.reload()" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;border-radius:8px;margin-right:4px;" title="リロード">⟳</button>
     <button class="logout-btn" onclick="doLogout()">ログアウト</button>
   </div>
   <div class="tabs">
@@ -393,6 +403,20 @@ function deleteUser(id){
   localStorage.removeItem('kt_gs_'+id);
   renderAdminUserList();
   populateUserSelect();
+}
+
+function resetAllData(){
+  if(!confirm('全従業員・全打刻データを完全に削除します。この操作は取り消せません。本当によろしいですか？'))return;
+  if(!confirm('最終確認：本当に全データを削除しますか？'))return;
+  const users=getUsers();
+  users.forEach(u=>{
+    localStorage.removeItem('kt_rec_'+u.id);
+    localStorage.removeItem('kt_gs_'+u.id);
+  });
+  localStorage.removeItem('kt_users');
+  localStorage.removeItem('kt_admin_pin');
+  alert('全データを削除しました。ページをリロードします。');
+  location.reload();
 }
 
 function changeAdminPassword(){
